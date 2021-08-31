@@ -1,2 +1,2 @@
-# numark-nv-2
+# numark-nv2
 A Mixxx cotroller mapping in typescript
