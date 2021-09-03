@@ -16,6 +16,8 @@ export class FineMidiControl extends MidiControl {
     }
 
     public offerValue(name: string, value: number) {
+        let lastValue = this.lastValue;
+
         if (name === this.nameMsb) {
             // tslint:disable-next-line: no-bitwise
             this.lastValue = ((value << 7) + this.lastValueLsb) / 0x3FFF;
@@ -30,7 +32,7 @@ export class FineMidiControl extends MidiControl {
 
         if (this.callback.onNewValue) this.callback.onNewValue(this.lastValue);
 
-        // onValueChanged is always called, even if the value didn't actually got changed from the previous call
+        if (lastValue === this.lastValue) return;
         if (this.callback.onValueChanged) this.callback.onValueChanged(this.lastValue);
     }
 }

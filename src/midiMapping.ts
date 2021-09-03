@@ -1,7 +1,7 @@
 export class MidiMapping {
     private constructor() { }
 
-    public static mapping: Record<number, Record<number, string>> = {
+    public static mapping: { [statusGroupKey: number]: { [midiNo: number]: string } } = {
         0xB0: {
             0x07: "CrossfaderMsb",
             0x27: "CrossfaderLsb",
@@ -11,6 +11,7 @@ export class MidiMapping {
             0x4D: "TraxEncoder",
             0x5B: "0FilterMsb",
             0x7B: "0FilterLsb",
+            0x4B: "0VuLevel",
             0x09: "0EqLowMsb",
             0x29: "0EqLowLsb",
             0x0A: "0EqMidMsb",
@@ -21,6 +22,7 @@ export class MidiMapping {
             0x2C: "0GainLsb",
             0x5C: "1FilterMsb",
             0x7C: "1FilterLsb",
+            0x4C: "1VuLevel",
             0x0E: "1EqLowMsb",
             0x2E: "1EqLowLsb",
             0x0F: "1EqMidMsb",
@@ -38,6 +40,7 @@ export class MidiMapping {
             0x0D: "0Shift",
             0x08: "0Back",
             0x1B: "0Loop",
+            0x51: "0TempoLed0",
             0x5D: "0JogTouchButton",
             0x10: "0PitchBendMinus",
             0x11: "0PitchBendPlus",
@@ -72,6 +75,7 @@ export class MidiMapping {
             0x0D: "1Shift",
             0x08: "1Back",
             0x1B: "1Loop",
+            0x51: "1TempoLed0",
             0x5D: "1JogTouchButton",
             0x10: "1PitchBendMinus",
             0x11: "1PitchBendPlus",
@@ -96,7 +100,7 @@ export class MidiMapping {
         }
     };
 
-    private static reversedMapping: Record<string, [number, number]> = {};
+    private static reversedMapping: { [a: string]: [number, number] } = {};
 
     public static initReversedMapping() {
         for (const statusGroupKey in MidiMapping.mapping) {

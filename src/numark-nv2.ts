@@ -4,6 +4,9 @@ import { activate } from "@/utils";
 import { MidiControl } from "./controls/midiControl";
 import { MidiMapping } from "./midiMapping";
 import { DeckButton } from "./controls/deckButton";
+import { FineMidiControl } from "./controls/fineMidiControl";
+
+const requestControlsSysex = [0xF0, 0x00, 0x01, 0x3f, 0x7f, 0x3b, 0x60, 0x00, 0x01, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0xf7];
 
 let decks: Deck[];
 let deckIndependentControls: MidiControl[];
@@ -21,7 +24,7 @@ export function init(): void {
     let ignoreCrossfader = true;
 
     deckIndependentControls = [
-        new MidiControl("Crossfader", true, {
+        new FineMidiControl("Crossfader", {
             onValueChanged: value => {
                 if (ignoreCrossfader) return;
                 engine.setParameter("[Master]", "crossfader", value);
@@ -65,6 +68,9 @@ export function init(): void {
     for (const deck of decks) {
         registerControls(deck.controls);
     }
+
+
+    midi.sendSysexMsg(requestControlsSysex, requestControlsSysex.length);
 }
 
 export function midiInput(channel: number, midiNo: number, value: number, status: number, group: string): void {
