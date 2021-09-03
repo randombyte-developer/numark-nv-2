@@ -16,23 +16,25 @@ export class FineMidiControl extends MidiControl {
     }
 
     public offerValue(name: string, value: number) {
-        let lastValue = this.lastValue;
+        let newValue: number;
 
         if (name === this.nameMsb) {
             // tslint:disable-next-line: no-bitwise
-            this.lastValue = ((value << 7) + this.lastValueLsb) / 0x3FFF;
+            newValue = ((value << 7) + this.lastValueLsb) / 0x3FFF;
             this.lastValueMsb = value;
         } else if (name === this.nameLsb) {
             // tslint:disable-next-line: no-bitwise
-            this.lastValue = ((this.lastValueMsb << 7) + value) / 0x3FFF;
+            newValue = ((this.lastValueMsb << 7) + value) / 0x3FFF;
             this.lastValueLsb = value;
         } else {
             return;
         }
 
-        if (this.callback.onNewValue) this.callback.onNewValue(this.lastValue);
+        if (this.callback.onNewValue) this.callback.onNewValue(newValue);
 
-        if (lastValue === this.lastValue) return;
-        if (this.callback.onValueChanged) this.callback.onValueChanged(this.lastValue);
+        if (newValue === this.lastValue) return;
+
+        if (this.callback.onValueChanged) this.callback.onValueChanged(newValue);
+        this.lastValue = newValue;
     }
 }

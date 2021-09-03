@@ -128,16 +128,30 @@ export class Deck {
                 }
             }),
 
-            new DeckMidiControl(this.index, "JogEncoder", false, {
-                onNewValue: value => {
-                    if (engine.isScratching(this.channel)) {
-                        engine.scratchTick(this.channel, value - ENCODER_CENTER);
-                    } else {
-                        this.setParameter("jog", (value - ENCODER_CENTER) / 10.0);
-                    }
+            new DeckButton(this.index, "TraxButton", {
+                onPressed: () => {
+                    this.activate("LoadSelectedTrack");
                 }
             })
         ];
+
+        const jogEncoder = new DeckFineMidiControl(this.index, "JogEncoder", {
+            onValueChanged: newValue => {
+                const valueDiff = Math.round((newValue - jogEncoder.lastValue) * 0x3FFF);
+
+                // the jog wheel is an absoulte-position encoder, which wraps around at some point
+                // the absolute  value when it wraps around is something like 127
+                // no fancy math is done here. it just ignores the wrap around
+                if (Math.abs(valueDiff) > 100) return;
+
+                if (engine.isScratching(this.channel)) {
+                    engine.scratchTick(this.channel, valueDiff);
+                } else {
+                    this.setParameter("jog", valueDiff / 10.0);
+                }
+            }
+        });
+        this.controls.push(jogEncoder);
 
         // Hotcues
         const hotcueIndices = [0, 4];
@@ -156,13 +170,6 @@ export class Deck {
             // }));
             this.makeLedConnection(`hotcue_${hotcueNumber}_enabled`, `Hotcue${padIndex}`);
         });
-
-        // Load track
-        this.controls.push(new DeckButton(this.index, "TraxButton", {
-            onPressed: () => {
-                this.activate("LoadSelectedTrack");
-            }
-        }));
 
         // Eject track
         // this.controls.push(new DeckButton(this.index, "LoadShifted", {

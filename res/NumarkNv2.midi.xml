@@ -557,7 +557,7 @@
         <key>NumarkNv2.midiInput</key>
         <description></description>
         <status>0xb1</status>
-        <midino>0x0</midino>
+        <midino>0x20</midino>
         <options>
           <script-binding></script-binding>
         </options>
@@ -567,7 +567,7 @@
         <key>NumarkNv2.midiInput</key>
         <description></description>
         <status>0xb1</status>
-        <midino>0x20</midino>
+        <midino>0x0</midino>
         <options>
           <script-binding></script-binding>
         </options>
@@ -1167,7 +1167,7 @@
         <key>NumarkNv2.midiInput</key>
         <description></description>
         <status>0xb2</status>
-        <midino>0x0</midino>
+        <midino>0x20</midino>
         <options>
           <script-binding></script-binding>
         </options>
@@ -1177,7 +1177,7 @@
         <key>NumarkNv2.midiInput</key>
         <description></description>
         <status>0xb2</status>
-        <midino>0x20</midino>
+        <midino>0x0</midino>
         <options>
           <script-binding></script-binding>
         </options>

@@ -93,8 +93,8 @@ export class MidiMapping {
         0xB1: {
             0x01: "0TempoMsb",
             0x21: "0TempoLsb",
-            0x00: "0JogEncoderMsb",
-            0x20: "0JogEncoderLsb"
+            0x20: "0JogEncoderMsb",
+            0x00: "0JogEncoderLsb"
         },
         0x82: {
             0x07: "1TraxButton",
@@ -145,8 +145,8 @@ export class MidiMapping {
         0xB2: {
             0x01: "1TempoMsb",
             0x21: "1TempoLsb",
-            0x00: "1JogEncoderMsb",
-            0x20: "1JogEncoderLsb"
+            0x20: "1JogEncoderMsb",
+            0x00: "1JogEncoderLsb"
         }
     };
 
