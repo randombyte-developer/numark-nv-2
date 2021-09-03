@@ -4,7 +4,6 @@ import { DeckFineMidiControl } from "@controls/deckFineMidiControl";
 import { DeckButton } from "@controls/deckButton";
 import { toggleControl, activate, makeLedConnection, clamp, setLed } from "@/utils";
 import { MidiMapping } from "./midiMapping";
-import { ENCODER_CENTER } from "./numark-nv2";
 import { FineMidiControl } from "./controls/fineMidiControl";
 
 export class Deck {
@@ -13,7 +12,8 @@ export class Deck {
     private readonly connections: Connection[] = [];
     private readonly group: string;
 
-    private rateControl: FineMidiControl;
+    private readonly rateControl: FineMidiControl;
+    private readonly shiftControl: DeckButton;
 
     constructor(readonly channel: number) {
         this.index = channel - 1;
@@ -36,8 +36,11 @@ export class Deck {
             }),
             new DeckButton(this.index, "Pfl", {
                 onPressed: () => {
-                    // TODO: turn off all other pfls
-                    this.toggleControl("pfl");
+                    // turns off all PFLs, because the controller internally keeps a radio-button-like state
+                    [1, 2].forEach(channel => {
+                        engine.setValue(`[Channel${channel}]`, "pfl", false);
+                    });
+                    this.activate("pfl");
                 }
             }),
             new DeckButton(this.index, "Back", {
@@ -140,10 +143,17 @@ export class Deck {
 
             new DeckButton(this.index, "TraxButton", {
                 onPressed: () => {
-                    this.activate("LoadSelectedTrack");
+                    if (this.shiftControl.lastValue > 0) {
+                        if (!this.getValue("play")) this.activate("eject");
+                    } else {
+                        this.activate("LoadSelectedTrack");
+                    }
                 }
             })
         ];
+
+        this.shiftControl = new DeckButton(this.index, "Shift", {}); // the lastValue is accessed somewhere else
+        this.controls.push(this.shiftControl);
 
         this.rateControl = new DeckFineMidiControl(this.index, "Tempo", {
             onValueChanged: value => {
@@ -179,23 +189,15 @@ export class Deck {
 
             this.controls.push(new DeckButton(this.index, `Hotcue${padIndex}`, {
                 onValueChanged: pressed => {
+                    if (pressed && this.shiftControl.lastValue > 0) {
+                        this.activate(`hotcue_${hotcueNumber}_clear`);
+                        return;
+                    };
                     this.setValue(`hotcue_${hotcueNumber}_activate`, pressed);
                 }
             }));
-            // this.controls.push(new DeckButton(this.index, `Hotcue${padIndex}Shifted`, {
-            //     onPressed: () => {
-            //         this.activate(`hotcue_${hotcueNumber}_clear`);
-            //     }
-            // }));
             this.makeLedConnection(`hotcue_${hotcueNumber}_enabled`, `Hotcue${padIndex}`, 0x0C); // green
         });
-
-        // Eject track
-        // this.controls.push(new DeckButton(this.index, "LoadShifted", {
-        //     onPressed: () => {
-        //         if (!this.getValue("play")) this.activate("eject");
-        //     }
-        // }));
 
         // SoftTakeover
         engine.softTakeover(this.group, "rate", true);

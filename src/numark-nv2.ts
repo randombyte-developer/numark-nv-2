@@ -13,8 +13,6 @@ let deckIndependentControls: MidiControl[];
 
 const controls: MidiControl[] = [];
 
-export const ENCODER_CENTER = 0x40;
-
 export function init(): void {
     
     MidiMapping.initReversedMapping();
