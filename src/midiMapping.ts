@@ -9,6 +9,8 @@ export class MidiMapping {
             0x12: "HeadphoneMix",
             0x03: "TraxEncoder",
             0x4D: "TraxEncoder",
+            0x08: "0VolumeMsb",
+            0x28: "0VolumeLsb",
             0x5B: "0FilterMsb",
             0x7B: "0FilterLsb",
             0x4B: "0VuLevel",
@@ -20,6 +22,8 @@ export class MidiMapping {
             0x2B: "0EqHighLsb",
             0x0C: "0GainMsb",
             0x2C: "0GainLsb",
+            0x0D: "1VolumeMsb",
+            0x2D: "1VolumeLsb",
             0x5C: "1FilterMsb",
             0x7C: "1FilterLsb",
             0x4C: "1VuLevel",
@@ -32,7 +36,7 @@ export class MidiMapping {
             0x11: "1GainMsb",
             0x31: "1GainLsb"
         },
-        0x91: {
+        0x81: {
             0x07: "0TraxButton",
             0x21: "0Play",
             0x20: "0Cue",
@@ -40,8 +44,8 @@ export class MidiMapping {
             0x0D: "0Shift",
             0x08: "0Back",
             0x1B: "0Loop",
-            0x51: "0TempoLed0",
             0x5D: "0JogTouchButton",
+            0x51: "0TempoLed0",
             0x10: "0PitchBendMinus",
             0x11: "0PitchBendPlus",
             0x0E: "0ParamAdjustLeft",
@@ -55,17 +59,65 @@ export class MidiMapping {
             0x4D: "0Hotcue6",
             0x4E: "0Hotcue7"
         },
+        0x80: {
+            0x35: "0Pfl",
+            0x36: "1Pfl"
+        },
+        0x91: {
+            0x07: "0TraxButton",
+            0x21: "0Play",
+            0x20: "0Cue",
+            0x1F: "0Sync",
+            0x0D: "0Shift",
+            0x08: "0Back",
+            0x1B: "0Loop",
+            0x5D: "0JogTouchButton",
+            0x51: "0TempoLed0",
+            0x10: "0PitchBendMinus",
+            0x11: "0PitchBendPlus",
+            0x0E: "0ParamAdjustLeft",
+            0x0F: "0ParamAdjustRight",
+            0x47: "0Hotcue0",
+            0x48: "0Hotcue1",
+            0x49: "0Hotcue2",
+            0x4A: "0Hotcue3",
+            0x4B: "0Hotcue4",
+            0x4C: "0Hotcue5",
+            0x4D: "0Hotcue6",
+            0x4E: "0Hotcue7"
+        },
+        0x90: {
+            0x35: "0Pfl",
+            0x36: "1Pfl"
+        },
         0xB1: {
-            0x08: "0VolumeMsb",
-            0x28: "0VolumeLsb",
             0x01: "0TempoMsb",
             0x21: "0TempoLsb",
             0x00: "0JogEncoderMsb",
             0x20: "0JogEncoderLsb"
         },
-        0x90: {
-            0x35: "0Pfl",
-            0x36: "1Pfl"
+        0x82: {
+            0x07: "1TraxButton",
+            0x21: "1Play",
+            0x20: "1Cue",
+            0x1F: "1Sync",
+            0x0D: "1Shift",
+            0x08: "1Back",
+            0x1B: "1Loop",
+            0x5D: "1JogTouchButton",
+            0x51: "1TempoLed0",
+            0x10: "1PitchBendMinus",
+            0x11: "1PitchBendPlus",
+            0x0E: "1ParamAdjustLeft",
+            0x0F: "1ParamAdjustRight",
+            0x47: "1Hotcue0",
+            0x48: "1Hotcue1",
+            0x49: "1Hotcue2",
+            0x4A: "1Hotcue3",
+            0x4B: "1Hotcue4",
+            0x4C: "1Hotcue5",
+            0x4D: "1Hotcue6",
+            0x4E: "1Hotcue7"
         },
         0x92: {
             0x07: "1TraxButton",
@@ -75,8 +127,8 @@ export class MidiMapping {
             0x0D: "1Shift",
             0x08: "1Back",
             0x1B: "1Loop",
-            0x51: "1TempoLed0",
             0x5D: "1JogTouchButton",
+            0x51: "1TempoLed0",
             0x10: "1PitchBendMinus",
             0x11: "1PitchBendPlus",
             0x0E: "1ParamAdjustLeft",
@@ -91,8 +143,6 @@ export class MidiMapping {
             0x4E: "1Hotcue7"
         },
         0xB2: {
-            0x0D: "1VolumeMsb",
-            0x2D: "1VolumeLsb",
             0x01: "1TempoMsb",
             0x21: "1TempoLsb",
             0x00: "1JogEncoderMsb",

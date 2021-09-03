@@ -32,77 +32,83 @@ export class Deck {
             }),
             new DeckButton(this.index, "Pfl", {
                 onPressed: () => {
+                    // TODO: turn off all other pfls
                     this.toggleControl("pfl");
+                }
+            }),
+            new DeckButton(this.index, "Back", {
+                onPressed: () => {
+                    activate("[Library]", "MoveFocusForward");
                 }
             }),
 
             // Loop
-            new DeckButton(this.index, "AutoLoop", {
+            new DeckButton(this.index, "Loop", {
                 onPressed: () => {
                     this.activate(`beatloop_${this.getValue("beatloop_size")}_toggle`);
                 }
             }),
 
             // Loop size
-            new DeckButton(this.index, "LoopEncoder", {
-                onNewValue: value => {
-                    const forward = value > ENCODER_CENTER;
-                    this.activate(forward ? "loop_double" : "loop_halve");
-                }
-            }),
+            // new DeckButton(this.index, "LoopEncoder", {
+            //     onNewValue: value => {
+            //         const forward = value > ENCODER_CENTER;
+            //         this.activate(forward ? "loop_double" : "loop_halve");
+            //     }
+            // }),
 
             // Gain
-            new DeckMidiControl(this.index, "Gain", true, {
+            new DeckFineMidiControl(this.index, "Gain", {
                 onValueChanged: value => {
                     this.setParameter("pregain", value);
                 }
             }),
 
             // EQ
-            new DeckMidiControl(this.index, "EqLow", true, {
+            new DeckFineMidiControl(this.index, "EqLow", {
                 onValueChanged: value => {
                     engine.setParameter(eqGroup, "parameter1", value);
                 }
             }),
-            new DeckMidiControl(this.index, "EqMid", true, {
+            new DeckFineMidiControl(this.index, "EqMid", {
                 onValueChanged: value => {
                     engine.setParameter(eqGroup, "parameter2", value);
                 }
             }),
-            new DeckMidiControl(this.index, "EqHigh", true, {
+            new DeckFineMidiControl(this.index, "EqHigh", {
                 onValueChanged: value => {
                     engine.setParameter(eqGroup, "parameter3", value);
                 }
             }),
 
             // Quick Effect / Filter
-            new DeckMidiControl(this.index, "Filter", true, {
+            new DeckFineMidiControl(this.index, "Filter", {
                 onValueChanged: value => {
                     engine.setParameter(filterEffectGroup, "super1", value);
                 }
             }),
 
-            new DeckMidiControl(this.index, "Volume", true, {
+            new DeckFineMidiControl(this.index, "Volume", {
                 onValueChanged: value => {
                     this.setParameter("volume", value);
                 }
             }),
 
             // Beatjump
-            new DeckButton(this.index, "FxSelectEncoder", {
-                onNewValue: value => {
-                    const forward = value > ENCODER_CENTER;
-                    this.activate(forward ? "beatjump_forward" : "beatjump_backward");
-                }
-            }),
+            // new DeckButton(this.index, "FxSelectEncoder", {
+            //     onNewValue: value => {
+            //         const forward = value > ENCODER_CENTER;
+            //         this.activate(forward ? "beatjump_forward" : "beatjump_backward");
+            //     }
+            // }),
 
             // Beatjump size
-            new DeckButton(this.index, "FxSelectEncoderShifted", {
-                onNewValue: value => {
-                    const forward = value > ENCODER_CENTER;
-                    this.modifyAndClampBeatjumpSize(forward ? 2 : 0.5);
-                }
-            }),
+            // new DeckButton(this.index, "FxSelectEncoderShifted", {
+            //     onNewValue: value => {
+            //         const forward = value > ENCODER_CENTER;
+            //         this.modifyAndClampBeatjumpSize(forward ? 2 : 0.5);
+            //     }
+            // }),
 
             new DeckFineMidiControl(this.index, "Tempo", {
                 onValueChanged: value => {
@@ -134,44 +140,43 @@ export class Deck {
         ];
 
         // Hotcues
-        const hotcueIndices = [0, 1, 2];
-        for (const hotcueIndex of hotcueIndices) {
+        const hotcueIndices = [0, 4];
+        hotcueIndices.forEach((padIndex, hotcueIndex) => {
             const hotcueNumber = hotcueIndex + 1;
 
-            this.controls.push(new DeckButton(this.index, `Hotcue${hotcueIndex}`, {
+            this.controls.push(new DeckButton(this.index, `Hotcue${padIndex}`, {
                 onValueChanged: pressed => {
                     this.setValue(`hotcue_${hotcueNumber}_activate`, pressed);
                 }
             }));
-            this.controls.push(new DeckButton(this.index, `Hotcue${hotcueIndex}Shifted`, {
-                onPressed: () => {
-                    this.activate(`hotcue_${hotcueNumber}_clear`);
-                }
-            }));
-            this.makeLedConnection(`hotcue_${hotcueNumber}_enabled`, `Hotcue${hotcueIndex}`);
-        }
+            // this.controls.push(new DeckButton(this.index, `Hotcue${padIndex}Shifted`, {
+            //     onPressed: () => {
+            //         this.activate(`hotcue_${hotcueNumber}_clear`);
+            //     }
+            // }));
+            this.makeLedConnection(`hotcue_${hotcueNumber}_enabled`, `Hotcue${padIndex}`);
+        });
 
         // Load track
-        this.controls.push(new DeckButton(this.index, "Load", {
+        this.controls.push(new DeckButton(this.index, "TraxButton", {
             onPressed: () => {
                 this.activate("LoadSelectedTrack");
             }
         }));
 
         // Eject track
-        this.controls.push(new DeckButton(this.index, "LoadShifted", {
-            onPressed: () => {
-                if (!this.getValue("play")) this.activate("eject");
-            }
-        }));
+        // this.controls.push(new DeckButton(this.index, "LoadShifted", {
+        //     onPressed: () => {
+        //         if (!this.getValue("play")) this.activate("eject");
+        //     }
+        // }));
 
         // SoftTakeover
         engine.softTakeover(this.group, "rate", true);
 
         // Leds
         this.makeLedConnection("play", "Play");
-        this.makeLedConnection("pfl", "Pfl");
-        this.makeLedConnection("loop_enabled", "AutoLoop");
+        this.makeLedConnection("loop_enabled", "Loop");
 
         this.triggerConnections();
     }

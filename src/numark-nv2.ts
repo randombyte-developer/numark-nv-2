@@ -30,11 +30,6 @@ export function init(): void {
                 engine.setParameter("[Master]", "crossfader", value);
             }
         }),
-        new Button("TraxButton", {
-            onPressed: () => {
-                activate("[Library]", "MoveFocusForward");
-            }
-        }),
         new MidiControl("Headphone", true, {
             onValueChanged: value => {
                 engine.setParameter("[Master]", "headGain", value * 0.5);
@@ -46,35 +41,34 @@ export function init(): void {
             }
         }),
         // Center and ignore crossfader
-        new DeckButton(0, "SyncShifted", {
-            onPressed: () => {
-                engine.setParameter("[Master]", "crossfader", 0.5);
-                ignoreCrossfader = !ignoreCrossfader;
-            }
-        })
+        // new DeckButton(0, "SyncShifted", {
+        //     onPressed: () => {
+        //         engine.setParameter("[Master]", "crossfader", 0.5);
+        //         ignoreCrossfader = !ignoreCrossfader;
+        //     }
+        // })
     ];
 
     function traxControl(name: string, factor: number): MidiControl {
         return new MidiControl(name, false, {
             onNewValue: value => {
-                engine.setValue("[Library]", "MoveVertical", (value - ENCODER_CENTER) * factor);
+                engine.setValue("[Library]", "MoveVertical", (value == 0x01 ? -1 : 1) * factor);
             }
         });
     }
     deckIndependentControls.push(traxControl("TraxEncoder", 1));
-    deckIndependentControls.push(traxControl("TraxEncoderShifted", 5));
+    //deckIndependentControls.push(traxControl("TraxEncoderShifted", 5));
 
     registerControls(deckIndependentControls);
     for (const deck of decks) {
         registerControls(deck.controls);
     }
 
-
     midi.sendSysexMsg(requestControlsSysex, requestControlsSysex.length);
 }
 
 export function midiInput(channel: number, midiNo: number, value: number, status: number, group: string): void {
-    //engine.log(`Channel ${channel}, MidiNo: ${midiNo}, Value: ${value}, Status: ${status}, Group: ${group}`);
+    engine.log(`Channel ${channel}, MidiNo: ${midiNo}, Value: ${value}, Status: ${status}, Group: ${group}`);
 
     const controlName = MidiMapping.mapping[status][midiNo];
     if (controlName == null) return;
