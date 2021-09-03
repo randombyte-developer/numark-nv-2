@@ -2,15 +2,18 @@ import { MidiControl } from "@controls/midiControl";
 import { DeckMidiControl } from "@controls/deckMidiControl";
 import { DeckFineMidiControl } from "@controls/deckFineMidiControl";
 import { DeckButton } from "@controls/deckButton";
-import { toggleControl, activate, makeLedConnection, clamp } from "@/utils";
+import { toggleControl, activate, makeLedConnection, clamp, setLed } from "@/utils";
 import { MidiMapping } from "./midiMapping";
 import { ENCODER_CENTER } from "./numark-nv2";
+import { FineMidiControl } from "./controls/fineMidiControl";
 
 export class Deck {
     public readonly index: number;
     public readonly controls: MidiControl[];
     private readonly connections: Connection[] = [];
     private readonly group: string;
+
+    private rateControl: FineMidiControl;
 
     constructor(readonly channel: number) {
         this.index = channel - 1;
@@ -28,6 +31,7 @@ export class Deck {
             new DeckButton(this.index, "Sync", {
                 onPressed: () => {
                     this.activate("beatsync");
+                    this.updateRateTakeoverLeds();
                 }
             }),
             new DeckButton(this.index, "Pfl", {
@@ -122,12 +126,6 @@ export class Deck {
                 }
             }),
 
-            new DeckFineMidiControl(this.index, "Tempo", {
-                onValueChanged: value => {
-                    this.setParameter("rate", 1 - value);
-                }
-            }),
-
             // Jog wheel
             new DeckButton(this.index, "JogTouchButton", {
                 onPressed: () => {                    
@@ -147,11 +145,20 @@ export class Deck {
             })
         ];
 
+        this.rateControl = new DeckFineMidiControl(this.index, "Tempo", {
+            onValueChanged: value => {
+                const hardwareValue = 1 - value;
+                this.setParameter("rate", hardwareValue);
+                this.updateRateTakeoverLeds(hardwareValue);
+            }
+        });
+        this.controls.push(this.rateControl);
+
         const jogEncoder = new DeckFineMidiControl(this.index, "JogEncoder", {
             onValueChanged: newValue => {
                 const valueDiff = Math.round((newValue - jogEncoder.lastValue) * 0x3FFF);
 
-                // the jog wheel is an absoulte-position encoder, which wraps around at some point
+                // the jog wheel is an absolute-position encoder, which wraps around at some point
                 // the absolute  value when it wraps around is something like 127
                 // no fancy math is done here. it just ignores the wrap around
                 if (Math.abs(valueDiff) > 100) return;
@@ -204,6 +211,12 @@ export class Deck {
         for (const connection of this.connections) {
             connection.trigger();
         }
+    }
+
+    private updateRateTakeoverLeds(hardwareValue: number = 1 - this.rateControl.lastValue) {
+        const softwareValue = this.getParameter("rate");
+        setLed(`${this.index}PitchBendPlus`, +(hardwareValue < softwareValue));
+        setLed(`${this.index}PitchBendMinus`, +(hardwareValue > softwareValue));
     }
 
     private modifyAndClampBeatjumpSize(factor: number) {

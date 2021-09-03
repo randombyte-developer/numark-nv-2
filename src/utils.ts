@@ -1,3 +1,5 @@
+import { MidiMapping } from "./midiMapping";
+
 export function log(msg: any) {
     engine.log(`Numark NV II Log: ${msg}`);
 }
@@ -18,4 +20,9 @@ export function makeLedConnection(channel: string, key: string, midiLedStatus: n
     return engine.makeConnection(channel, key, value => {
         midi.sendShortMsg(midiLedStatus, midiLedNo, value * 0x7F);
     });
+}
+
+export function setLed(controlName: string, value: number) {
+    const [status, midiNo] = MidiMapping.getMidiForControl(controlName);
+    midi.sendShortMsg(status, midiNo, value);
 }
