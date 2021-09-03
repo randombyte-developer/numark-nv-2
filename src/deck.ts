@@ -35,12 +35,9 @@ export class Deck {
                 }
             }),
             new DeckButton(this.index, "Pfl", {
-                onPressed: () => {
-                    // turns off all PFLs, because the controller internally keeps a radio-button-like state
-                    [1, 2].forEach(channel => {
-                        engine.setValue(`[Channel${channel}]`, "pfl", false);
-                    });
-                    this.activate("pfl");
+                onValueChanged: value => {
+                    // implemented like this because the controller internally keeps a radio-button-like state
+                    engine.setValue(this.group, "pfl", value > 0);
                 }
             }),
             new DeckButton(this.index, "Back", {
