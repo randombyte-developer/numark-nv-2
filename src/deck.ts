@@ -187,7 +187,7 @@ export class Deck {
             //         this.activate(`hotcue_${hotcueNumber}_clear`);
             //     }
             // }));
-            this.makeLedConnection(`hotcue_${hotcueNumber}_enabled`, `Hotcue${padIndex}`);
+            this.makeLedConnection(`hotcue_${hotcueNumber}_enabled`, `Hotcue${padIndex}`, 0x0C); // green
         });
 
         // Eject track
@@ -203,6 +203,8 @@ export class Deck {
         // Leds
         this.makeLedConnection("play", "Play");
         this.makeLedConnection("loop_enabled", "Loop");
+        setLed(`${this.index}Hotcue6`, 0x11); // dark purple
+        setLed(`${this.index}Hotcue7`, 0x11);
 
         this.triggerConnections();
     }
@@ -251,8 +253,8 @@ export class Deck {
         this.connections.push(engine.makeConnection(this.group, key, callback));
     }
 
-    private makeLedConnection(key: string, controlName: string) {
+    private makeLedConnection(key: string, controlName: string, ledValue: number = 0x7F) {
         const [status, midiNo] = MidiMapping.getMidiForControl(`${this.index}${controlName}`);
-        this.connections.push(makeLedConnection(this.group, key, status, midiNo));
+        this.connections.push(makeLedConnection(this.group, key, status, midiNo, ledValue));
     }
 }
