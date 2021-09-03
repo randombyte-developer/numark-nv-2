@@ -50,12 +50,16 @@ export class Deck {
             }),
 
             // Loop size
-            // new DeckButton(this.index, "LoopEncoder", {
-            //     onNewValue: value => {
-            //         const forward = value > ENCODER_CENTER;
-            //         this.activate(forward ? "loop_double" : "loop_halve");
-            //     }
-            // }),
+            new DeckButton(this.index, "PitchBendPlus", {
+                onPressed: () => {
+                    this.activate("loop_double");
+                }
+            }),
+            new DeckButton(this.index, "PitchBendMinus", {
+                onPressed: () => {
+                    this.activate("loop_halve");
+                }
+            }),
 
             // Gain
             new DeckFineMidiControl(this.index, "Gain", {
@@ -95,20 +99,28 @@ export class Deck {
             }),
 
             // Beatjump
-            // new DeckButton(this.index, "FxSelectEncoder", {
-            //     onNewValue: value => {
-            //         const forward = value > ENCODER_CENTER;
-            //         this.activate(forward ? "beatjump_forward" : "beatjump_backward");
-            //     }
-            // }),
+            new DeckButton(this.index, "Hotcue6", {
+                onPressed: () => {
+                    this.activate("beatjump_backward");
+                }
+            }),
+            new DeckButton(this.index, "Hotcue7", {
+                onPressed: () => {
+                    this.activate("beatjump_forward");
+                }
+            }),
 
             // Beatjump size
-            // new DeckButton(this.index, "FxSelectEncoderShifted", {
-            //     onNewValue: value => {
-            //         const forward = value > ENCODER_CENTER;
-            //         this.modifyAndClampBeatjumpSize(forward ? 2 : 0.5);
-            //     }
-            // }),
+            new DeckButton(this.index, "ParamAdjustRight", {
+                onPressed: () => {
+                    this.modifyAndClampBeatjumpSize(2);
+                }
+            }),
+            new DeckButton(this.index, "ParamAdjustLeft", {
+                onPressed: () => {
+                    this.modifyAndClampBeatjumpSize(0.5);
+                }
+            }),
 
             new DeckFineMidiControl(this.index, "Tempo", {
                 onValueChanged: value => {
