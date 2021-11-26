@@ -66,11 +66,11 @@ export function init(): void {
 }
 
 export function midiInput(channel: number, midiNo: number, value: number, status: number, group: string): void {
-    engine.log(`Channel ${channel}, MidiNo: ${midiNo}, Value: ${value}, Status: ${status}, Group: ${group}`);
+    //engine.log(`Channel ${channel}, MidiNo: ${midiNo}, Value: ${value}, Status: ${status}, Group: ${group}`);
 
     const controlName = MidiMapping.mapping[status][midiNo];
     if (controlName == null) return;
-    engine.log(`${controlName}: ${value}`);
+    //engine.log(`${controlName}: ${value}`);
 
     for (const control of controls) {
         control.offerValue(controlName, value);
