@@ -131,7 +131,7 @@ export class Deck {
                 onPressed: () => {                    
                     const alpha = 1.0 / 8;
                     const beta = alpha / 32;
-                    engine.scratchEnable(channel, 512, 33 + 1 / 3, alpha, beta, true);
+                    engine.scratchEnable(channel, 512, 33 + 1 / 3, alpha, beta, false);
                 },
                 onReleased: () => {
                     engine.scratchDisable(channel, true);
