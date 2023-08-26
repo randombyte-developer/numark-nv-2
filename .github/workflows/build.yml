@@ -1,0 +1,17 @@
+name: Build
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci
+      - run: npm run build
+      - run: cp ./res/NumarkNv2.midi.xml ./dist/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./dist/*
+          if-no-files-found: error

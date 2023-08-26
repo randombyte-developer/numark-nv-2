@@ -1,35 +1,15 @@
 {
   "name": "numark-nv2",
-  "version": "1.0.0",
-  "description": "A controller mapping for the Numark NV II for Mixxx",
-  "main": "dist/numark-nv2.js",
-  "config": { "entry": "./src/numark-nv2.js" },
-  "files": [ "dist" ],
-  "scripts": {
-    "build": "gulp build",
-    "clean": "gulp clean"
-  },
-  "keywords": [],
+  "version": "1.5.0",
   "author": "Sven Rahn",
   "license": "GPL-2.0",
-  "homepage": "https://www.randombyte.de",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c"
+  },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
-    "@types/gulp": "^4.0.6",
-    "@types/node": "^12.11.2",
-    "dts-bundle-generator": "^3.2.0",
-    "gulp": "^4.0.2",
-    "gulp-cli": "^2.2.0",
-    "gulp-shell": "^0.7.1",
-    "rimraf": "^3.0.0",
-    "rollup": "^1.25.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-uglify": "^6.0.3",
-    "ts-node": "^8.4.1",
-    "ttypescript": "^1.5.7",
-    "typescript": "^3.6.4",
-    "typescript-transform-paths": "^1.1.11"
+    "rollup": "^3.10.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^4.9.4"
   }
 }

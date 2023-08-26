@@ -1,6 +1,6 @@
-import { Button } from "@controls/button";
-import { Deck } from "@/deck";
-import { activate } from "@/utils";
+import { Button } from "./controls/button";
+import { Deck } from "./deck";
+import { activate } from "./utils";
 import { MidiControl } from "./controls/midiControl";
 import { MidiMapping } from "./midiMapping";
 import { DeckButton } from "./controls/deckButton";
@@ -14,7 +14,7 @@ let deckIndependentControls: MidiControl[];
 const controls: MidiControl[] = [];
 
 export function init(): void {
-    
+
     MidiMapping.initReversedMapping();
 
     decks = [1, 2].map(channel => new Deck(channel));
