@@ -15,7 +15,7 @@ export class Deck {
   private readonly rateControl: FineMidiControl;
   private readonly shiftControl: DeckButton;
 
-  constructor(readonly channel: number) {
+  constructor(readonly channel: number, readonly toggleTracklistSelected: () => void) {
     this.index = channel - 1;
     this.group = `[Channel${channel}]`;
 
@@ -42,7 +42,7 @@ export class Deck {
       }),
       new DeckButton(this.index, "Back", {
         onPressed: () => {
-          activate("[Library]", "MoveFocusForward");
+          this.toggleTracklistSelected();
         }
       }),
 

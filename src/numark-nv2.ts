@@ -17,8 +17,9 @@ export function init(): void {
 
     MidiMapping.initReversedMapping();
 
-    decks = [1, 2].map(channel => new Deck(channel));
+    decks = [1, 2].map(channel => new Deck(channel, () => tracklistSelected = !tracklistSelected));
 
+    let tracklistSelected = false;
     let ignoreCrossfader = true;
 
     deckIndependentControls = [
@@ -50,7 +51,12 @@ export function init(): void {
     function traxControl(name: string, factor: number): MidiControl {
         return new MidiControl(name, false, {
             onNewValue: value => {
-                engine.setValue("[Library]", "MoveVertical", (value == 0x01 ? -1 : 1) * factor);
+                const direction = value == 0x01 ? -1 : 1;
+                if (tracklistSelected) {
+                    engine.setValue("[Playlist]", "SelectTrackKnob", direction * factor);
+                } else {
+                    engine.setValue("[Playlist]", "SelectPlaylist", direction * factor);
+                }
             }
         });
     }
